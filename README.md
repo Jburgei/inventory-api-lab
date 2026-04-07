@@ -67,3 +67,10 @@ python3 cli.py
 ### 6. Run tests
 
 pytest -v
+
+
+### 7. External API Endpoint
+
+This endpoint fetches product data from OpenFoodFacts API using a barcode.
+
+curl http://127.0.0.1:5000/external/barcode/737628064502

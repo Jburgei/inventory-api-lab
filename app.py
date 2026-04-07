@@ -19,16 +19,13 @@ def get_inventory_item(item_id):
     return jsonify({"error": "Item not found"}), 404
 
 
-
 @app.route('/inventory', methods=['POST'])
 def add_inventory_item():
     data = request.get_json()
 
-    
     if not data or "name" not in data or "price" not in data or "stock" not in data:
         return jsonify({"error": "Invalid data"}), 400
 
-    
     new_id = len(inventory) + 1
 
     new_item = {
@@ -76,16 +73,16 @@ def delete_inventory_item(item_id):
 
 @app.route('/external/barcode/<barcode>', methods=['GET'])
 def get_external_product(barcode):
-    try:
-        product = fetch_product_by_barcode(barcode)
+    product = fetch_product_by_barcode(barcode)
 
-        if not product:
-            return jsonify({"error": "Product not found"}), 404
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
 
-        return jsonify(product), 200
+    if "error" in product:
+        return jsonify(product), 502
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify(product), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)

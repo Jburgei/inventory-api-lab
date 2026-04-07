@@ -8,19 +8,23 @@ def fetch_product_by_barcode(barcode):
         "User-Agent": "inventory-api-lab/1.0 (student project; contact: test@example.com)"
     }
 
-    response = requests.get(url, headers=headers, timeout=10)
-    response.raise_for_status()
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
 
-    data = response.json()
+        data = response.json()
 
-    if data.get("status") != 1:
-        return None
+        if data.get("status") != 1:
+            return None
 
-    product = data.get("product", {})
+        product = data.get("product", {})
 
-    return {
-        "barcode": barcode,
-        "product_name": product.get("product_name"),
-        "brand": product.get("brands"),
-        "ingredients": product.get("ingredients_text")
-    }
+        return {
+            "barcode": barcode,
+            "product_name": product.get("product_name", "Unknown"),
+            "brand": product.get("brands", "Unknown"),
+            "ingredients": product.get("ingredients_text", "Not available")
+        }
+
+    except requests.exceptions.RequestException:
+        return {"error": "Failed to connect to OpenFoodFacts API"}
